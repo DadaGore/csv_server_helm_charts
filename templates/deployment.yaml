@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-csvserver
+  labels:
+    {{- include "labels" .| indent 4 }}
+spec:
+  replicas: {{ default 1 .Values.replicaCount | int }}
+  selector:
+    matchLabels:
+      {{- include "labels" .| indent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "labels" .| indent 8 }}
+    spec:
+      containers:
+      - image: "{{ .Values.csvserver.repository }}:{{ .Values.csvserver.tag }}"
+        name: '{{ .Chart.Name }}'
+        ports:
+        - containerPort: 9300
+        env:
+        - name: "{{ .Values.env.name }}"
+          value: "{{ .Values.env.value }}"
+        volumeMounts:
+        - name: {{ .Release.Name }}--configmap
+          mountPath: /csvserver/inputdata
+          subPath: inputdata
+      volumes:
+      - name: {{ .Release.Name }}--configmap
+        configMap:
+          name: {{ .Release.Name }}--configmap
+          items:
+            - key: input
+              path: inputdata
+

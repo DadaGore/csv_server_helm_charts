@@ -1,0 +1,51 @@
+
+replicaCount: 1
+
+csvserver:
+  repository: docker.io/infracloudio/csvserver
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "latest"
+prometheusserver:
+  name: prometheus
+  repository: docker.io/prom/prometheus
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "v2.36.2"
+env:
+  name: CSVSERVER_BORDER
+  value: Blue
+
+appservice:
+  type: ClusterIP 
+  port: 9300
+  targetPort: 9300
+prometheusservice:
+  type: ClusterIP
+  port: 9090
+  targetPort: 9090
+accessModes :  ReadWriteO
+pv: 
+  name: prometheus-pv-volume
+  type: local
+  storageClassName: custom
+  storage: 1Gi 
+  accessModes:  ReadWriteOnce
+  path: "/mnt/data"  
+  
+csvserverinput:
+   - 0, 67474
+   - 1, 67890
+   - 2, 13455
+   - 3, 35467
+   - 4, 98687
+   - 5, 56789
+   - 6, 3456
+   - 7, 45678
+   - 8, 98765
+   - 9, 8766
+scrape_interval: 10s
+
+    
+
+  
